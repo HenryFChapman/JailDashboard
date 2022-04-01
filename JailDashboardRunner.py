@@ -7,8 +7,8 @@ from CaseHistoryCollector import caseHistoryCollector
 import pandas as pd 
 
 #Scrape Jail Data
-#print("Scrape Inmates")
-#inmatesDataFrame = scrapeInmates()
+print("Scrape Inmates")
+inmatesDataFrame = scrapeInmates()
 inmatesDataFrame = pd.read_csv("AllInmates.csv", encoding = 'utf-8')
 
 print("Get Updated Karpel Data")

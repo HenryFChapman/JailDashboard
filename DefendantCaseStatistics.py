@@ -54,7 +54,7 @@ def getBondByCategory(dataframe):
 	bondCategory.to_csv("DataForDashboard\\JailDefendant - InitialBond.csv", encoding = 'utf-8', index = False)
 
 def getReferringAgency(dataframe):
-	referringAgency = pd.DataFrame(columns = ['Category', "Year", "Number"] )
+	
 	allReferringAgencies = pd.read_excel("PD Agency.xlsx")
 
 	dataframe = dataframe.drop_duplicates(subset = ['File #'])
@@ -73,11 +73,13 @@ def getReferringAgency(dataframe):
 	#	referringAgency = referringAgency.append(tempReferringAgenciesDF)
 
 	#Get All
-	allReferringAgenciesDF = pd.DataFrame()
-	allReferringAgenciesDF['Number'] = dataframe.groupby(['PD NAME']).size()
-	allReferringAgenciesDF['Year'] = "All"
+	#allReferringAgenciesDF = pd.DataFrame()
 
-	referringAgency = pd.concat(referringAgency, allReferringAgenciesDF)
+	referringAgency = pd.DataFrame(columns = ['Category', "Year", "Number"] )
+	referringAgency['Number'] = dataframe.groupby(['PD NAME']).size()
+	referringAgency['Year'] = "All"
+
+	#referringAgency = pd.concat([referringAgency].append(allReferringAgenciesDF))
 
 	referringAgency['Category'] = referringAgency.index
 	referringAgency['Number'] = referringAgency['Number'].astype(int)
