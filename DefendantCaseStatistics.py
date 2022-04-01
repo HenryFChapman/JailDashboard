@@ -60,25 +60,24 @@ def getReferringAgency(dataframe):
 	dataframe = dataframe.drop_duplicates(subset = ['File #'])
 	dataframe = dataframe.merge(allReferringAgencies, on='Agency')
 
-	dataframe['Filing Dt.'] = pd.to_datetime(dataframe['Filing Dt.'])
-	dataframe['Filing Year'] = pd.DatetimeIndex(dataframe['Filing Dt.']).year
-	dataframe = dataframe.dropna(subset = ["Filing Dt."])
-	filingYear = list(set(dataframe['Filing Year'].astype(int).tolist()))
+	#dataframe['Filing Dt.'] = pd.to_datetime(dataframe['Filing Dt.'])
+	#dataframe['Filing Year'] = pd.DatetimeIndex(dataframe['Filing Dt.']).year
+	#dataframe = dataframe.dropna(subset = ["Filing Dt."])
 
 	#Loop Through Years
-	for tempYear in filingYear:
-		tempDataFrame = dataframe[dataframe['Filing Year']==tempYear]
-		tempReferringAgenciesDF = pd.DataFrame()
-		tempReferringAgenciesDF["Number"] = tempDataFrame.groupby(['PD NAME']).size()
-		tempReferringAgenciesDF['Year'] = tempYear
-		referringAgency = referringAgency.append(tempReferringAgenciesDF)
+	#for tempYear in filingYear:
+	#	tempDataFrame = dataframe[dataframe['Filing Year']==tempYear]
+	#	tempReferringAgenciesDF = pd.DataFrame()
+	#	tempReferringAgenciesDF["Number"] = tempDataFrame.groupby(['PD NAME']).size()
+	#	tempReferringAgenciesDF['Year'] = tempYear
+	#	referringAgency = referringAgency.append(tempReferringAgenciesDF)
 
 	#Get All
 	allReferringAgenciesDF = pd.DataFrame()
 	allReferringAgenciesDF['Number'] = dataframe.groupby(['PD NAME']).size()
 	allReferringAgenciesDF['Year'] = "All"
 
-	referringAgency = referringAgency.append(allReferringAgenciesDF)
+	referringAgency = pd.concat(referringAgency, allReferringAgenciesDF)
 
 	referringAgency['Category'] = referringAgency.index
 	referringAgency['Number'] = referringAgency['Number'].astype(int)
@@ -158,4 +157,4 @@ def runDefendantCaseStatistics(filedCasesDF):
 	getBondByCategory(filedCasesDF)
 	getReferringAgency(filedCasesDF)
 	getInmateDurationHistogram(filedCasesDF)
-	inmatesMostRecentFiledCases(filedCasesDF)
+	#inmatesMostRecentFiledCases(filedCasesDF)

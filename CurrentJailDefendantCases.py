@@ -9,12 +9,15 @@ import datetime
 def matchInmatesToCases(inmatesDataFrame, concatenatedDataFrames):
 	inmatesDataFrame['ColToMatch'] = inmatesDataFrame["LastName"] + ", " +inmatesDataFrame["FirstName"]+ ", " + inmatesDataFrame['DateOfBirth'].astype(str) + ", (" + inmatesDataFrame['Race'] + "/" + inmatesDataFrame['Sex'] + ")"
 	inmateDatesOfBirth = list(set(inmatesDataFrame['DateOfBirth'].tolist()))
-	jailInmateLibrary = pd.DataFrame()
+	#jailInmateLibrary = pd.DataFrame()
 
+
+	frames = []
 	for caseType in concatenatedDataFrames:
 		tempCaseType = caseType.drop_duplicates(subset=['File #']).reset_index(drop=True)
 
-		tempCaseType['Def. DOB'] = pd.to_datetime(tempCaseType['Def. DOB'])
+		tempCaseType['Def. DOB'] = pd.to_datetime(tempCaseType['Def. DOB'], errors = 'coerce', infer_datetime_format=True)
+
 		tempCaseType['Def. DOB'] = tempCaseType['Def. DOB'].dt.strftime('%Y-%m-%d')
 
 		tempCaseType = tempCaseType[tempCaseType['Def. DOB'].isin(inmateDatesOfBirth)]
@@ -30,8 +33,10 @@ def matchInmatesToCases(inmatesDataFrame, concatenatedDataFrames):
 
 		tempCaseType = tempCaseType[tempCaseType['best_match_score']>.3]
 		tempCaseType = tempCaseType[['File #', "best_match_score", 'InmateNum', "ColToMatch_right"]]
-		jailInmateLibrary = jailInmateLibrary.append(tempCaseType)
-	
+
+		frames.append(tempCaseType)
+
+	jailInmateLibrary = pd.concat(frames)
 	jailInmateLibrary = jailInmateLibrary.drop_duplicates(subset=["File #"]).reset_index(drop=True)
 
 	jailInmateLibrary.to_csv("JailInmateLibrary.csv", encoding='utf-8', index = False)

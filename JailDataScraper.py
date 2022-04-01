@@ -118,7 +118,9 @@ def scrapeInmates():
 def combineCSVs():
 	dataDirectory = "DataForDashboard\\"
 
-	combinedDataDF = pd.DataFrame()
+	
+
+	frames = []
 
 	for dataItem in os.listdir(dataDirectory):
 
@@ -129,6 +131,8 @@ def combineCSVs():
 		if "Individual" in dataItem:
 			tempDataFrame['File Number'] = tempDataFrame['File Number'].astype(str)
 
-		combinedDataDF = combinedDataDF.append(tempDataFrame)
+		frames.append(tempDataFrame)
+
+	combinedDataDF = pd.concat(frames)
 
 	combinedDataDF.to_csv("JailCombinedData.csv", index = False, encoding = 'utf-8')

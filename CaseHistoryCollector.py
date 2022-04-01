@@ -122,7 +122,7 @@ def loadConsolidatedCases(directory, mostRecent):
 	receivedCases = receivedCases.rename({'Def  Name': 'Def. Name', 'Enter Dt ': 'Enter Dt.', 'Def  DOB': "Def. DOB", "Def  Race":"Def. Race", "Def Sex":"Def. Sex", "Ref  Charge":"Ref. Charge Code", "Ref  Charge Desctiption": "Ref. Charge Description"}, axis=1) 
 	receivedCases = receivedCases[['File #', "CRN", "Agency", "Enter Dt.","Def. Name", "Def. Race", "Def. Sex", "Def. DOB", "Ref. Charge Code", "Ref. Charge Description", "Year"]]
 	
-	oldReceivedCases = oldReceivedCases.append(receivedCases)
+	oldReceivedCases = pd.concat([oldReceivedCases, receivedCases])
 	karpelDataFrames.append(oldReceivedCases)
 
 	#Old Filed Cases
@@ -134,7 +134,8 @@ def loadConsolidatedCases(directory, mostRecent):
 	filedCases = pd.read_csv(directory + "Fld_" + mostRecent + "_1800.CSV", encoding='utf-8')
 	filedCases = filedCases.rename(columns={'Def  Name': 'Def. Name', 'Enter Dt ': 'Enter Dt.', 'Def  DOB': "Def. DOB", "Def  Race":"Def. Race", "Def Sex":"Def. Sex", "Ref. Charge":"Ref. Charge Code", "Ref. Charge Desctiption": "Ref. Charge Description", 'Filing Date.': 'Filing Dt.'})
 	filedCases = filedCases[['File #', "CRN", "Agency", "Enter Dt.", "Filing Dt.", "Def. Name", "Def. Sex", "Def. Race", "Def. DOB", "Ref. Charge Code", "Ref. Charge Description"]]
-	oldFiledCases = oldFiledCases.append(filedCases)
+	
+	oldFiledCases = pd.concat([oldFiledCases, filedCases])
 	karpelDataFrames.append(oldFiledCases)
 
 	#Old Disposed Cases
@@ -146,31 +147,12 @@ def loadConsolidatedCases(directory, mostRecent):
 	disposedCases = pd.read_csv(directory + "Disp_"+mostRecent+"_1800.CSV", encoding='utf-8')
 	disposedCases = disposedCases.rename(columns={'Def  Name': 'Def. Name', 'Enter Dt ': 'Enter Dt.', 'Def  DOB': "Def. DOB", "Def  Race":"Def. Race", "Def Sex":"Def. Sex", "Charge Code":"Ref. Charge Code", "Charge Desctiption": "Ref. Charge Description", 'Filing Date.': 'Filing Dt.'})
 	disposedCases = disposedCases[["File #", "CRN", "Agency", "Disp. Dt.", "Enter Dt.",  "Ref. Charge Code", "Ref. Charge Description", "Disp. Code", ]]
-	oldDisposedCases = oldDisposedCases.append(disposedCases)
+	oldDisposedCases = pd.concat([oldDisposedCases, disposedCases])
 	
 	dispositionReasons = pd.read_csv("Disposition Codes.csv")
 	oldDisposedCases = oldDisposedCases.merge(dispositionReasons, on = "Disp. Code", how = 'left')
 
 	karpelDataFrames.append(oldDisposedCases)
-
-	#Old Refused Cases
-	#oldRefusedCases = pd.read_csv("RawDataConsolidated\\4 - Refused.csv")
-	#oldRefusedCases = oldRefusedCases[oldRefusedCases['Year']!=2022]
-	#disposedCases = disposedCases.rename(columns={'Def  Name': 'Def. Name', 'Enter Dt ': 'Enter Dt.', 'Def  DOB': "Def. DOB", "Def  Race":"Def. Race", "Def Sex":"Def. Sex", "Charge Code":"Ref. Charge Code", "Charge Desctiption": "Ref. Charge Description", 'Filing Date.': 'Filing Dt.'})
-	#oldRefusedCases = oldRefusedCases[["File #", "CRN", "Disp. Code", "Disp. Dt.", "Agency", "Enter Dt.", 'Ref. Charge Code', 'Ref. Charge Description', ]]
-
-	#New Refused Cases
-	#notFiledCases = pd.read_csv(directory + "Ntfld_"+mostRecent+"_1800.csv")
-	#notFiledCases = notFiledCases.rename(columns={'Def  Name': 'Def. Name', 'Enter Dt ': 'Enter Dt.', 'Def  DOB': "Def. DOB", "Def  Race":"Def. Race", "Def Sex":"Def. Sex", "Charge Code":"Ref. Charge Code", "Ref.Charge Desctiption": "Ref. Charge Description", 'Filing Date.': 'Filing Dt.'})
-	#notFiledCases = notFiledCases[["File #", "CRN", "Disp. Code", "Disp. Dt.", "Agency", "Enter Dt.", 'Ref. Charge Code', 'Ref. Charge Description', ]]
-	#oldRefusedCases = oldRefusedCases.append(notFiledCases)
-
-	#refusalReasons = pd.read_csv("RefusalReasons.csv", encoding = 'utf-8')
-	#oldRefusedCases = oldRefusedCases.merge(refusalReasons, on = 'Disp. Code', how = 'left')
-	#oldRefusedCases = oldRefusedCases[["File #", "CRN", "Reason",  "Disp. Dt.", "Agency", "Enter Dt.", "Ref. Charge Code", "Ref. Charge Description"]]
-	#oldRefusedCases = oldRefusedCases.rename(columns = {'Reason':'Disp. Code'})
-
-	#karpelDataFrames.append(oldRefusedCases)
 
 	return karpelDataFrames
 
