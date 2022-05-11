@@ -109,7 +109,7 @@ def scrapeInmates():
 	df['MiddleName'] = df['MiddleName'].str.upper().str.title()
 	df['DateOfBirth'] = pd.to_datetime(df['DateOfBirth'])
 
-	df['MiddleName'] = df['MiddleName'].str.replace(r'[^\x00-\x7f]', '')
+	df['MiddleName'] = df['MiddleName'].str.replace(r'[^\x00-\x7f]', '', regex = True)
 	df.to_csv( "AllInmates.csv", index=False, encoding='utf-8')
 
 	return df
